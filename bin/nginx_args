@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+# -*- bash -*-
+#
+#!/usr/bin/env node
+# -*- js   -*-
+#
+#!/usr/bin/env lua
+#
+#
+
+_env_="production"
+if [[ ! -z "$RACK_ENV" ]]
+then
+  _env_="$RACK_ENV"
+fi
+
+if [[ ! -z "$IS_DEV"  ]]
+then
+  _env_="development"
+fi
+
+set -u -e -o pipefail
+
+conf="nginx.conf"
+if [[ $_env_ == "development" ]]
+then
+  conf="nginx.dev.conf"
+fi
+
+nginx=openresty/nginx/sbin/nginx
+
+echo $nginx -c ../conf/$conf -p `pwd`/openresty/
+
+
+

@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+# -*- bash -*-
+#
+#!/usr/bin/env node
+# -*- js   -*-
+#
+#!/usr/bin/env lua
+#
+#
+set -u -e -o pipefail
+
+if [[ -z "$(which luajit)" ]]
+then
+  echo "LuaJIT not found. Exiting..."
+  exit 1
+fi
+
+archive=ngx_openresty.tar.gz
+dir=$(pwd)
+
+
+rm -rf ngx_openresty-*
+rm -f  $archive
+
+mkdir -p openresty
+cd openresty
+wget http://openresty.org/download/ngx_openresty-1.2.8.6.tar.gz -O $archive
+
+tar xzvf $archive
+cd ngx_openresty-*
+
+./configure                         \
+   --with-luajit                    \
+   --prefix=$dir/openresty          \
+   --with-http_postgres_module      \
+   --with-http_iconv_module
+
+make
+make install
+
+cd $dir/openresty
+echo "openresty installed to: $dir/openresty"
+
